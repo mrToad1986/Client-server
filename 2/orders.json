@@ -1,0 +1,18 @@
+{
+    "orders": [
+        {
+            "item": "GeForce RTX 3080",
+            "quantity": "4",
+            "price": "179000",
+            "buyer": "Абрамов П.В.",
+            "date": "25.04.2022"
+        },
+        {
+            "item": "Lenovo Tab P11",
+            "quantity": "12",
+            "price": "32600",
+            "buyer": "Петров В.А.",
+            "date": "27.04.2022"
+        }
+    ]
+}

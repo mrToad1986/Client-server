@@ -1,0 +1,13 @@
+currency:
+- USD
+- EUR
+- GBP
+- JPY
+- BTC
+positions: 5
+volume:
+  US Dollar: 5000$
+  Euro: 10000€
+  GB Pound: 5000£
+  Japanese Yena: 1000000¥
+  Bitcoin: 1.2611₿
