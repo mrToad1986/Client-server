@@ -3,7 +3,12 @@
 import json
 from common.variables import MAX_MSG_LENGTH, ENCODING
 
+import sys
+sys.path.append('../')
+from decorators import log
+
 #прием и декодирование (байты -> строка(loads) -> словарь) сообщения
+@log
 def get_message(client):
     encoded_response = client.recv(MAX_MSG_LENGTH)
     if isinstance(encoded_response, bytes):
@@ -17,6 +22,7 @@ def get_message(client):
     raise ValueError
 
 #кодирование (словарь -> строка(dumps) -> байты) и отправка сообщения
+@log
 def send_message(sock, message):
     if not isinstance(message, dict):
         raise TypeError
