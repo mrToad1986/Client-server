@@ -16,11 +16,13 @@ import logging
 from logs import client_log_config
 from common.utils import get_message, send_message
 from common.variables import DEFAULT_PORT, DEFAULT_IP_ADDR, ACTION, TIME, USER, ACCOUNT_NAME, PRESENCE, RESPONSE, ERROR
+from decorators import log
 
 # Создание именованного логгера для сервера
 client_logger = logging.getLogger('client_log')
 
 # инициализация пользователя
+@log
 def create_presence(account_name='Guest'):
     out = {
         ACTION: PRESENCE,
@@ -33,6 +35,7 @@ def create_presence(account_name='Guest'):
     return out
 
 # обработка ответа сервера
+@log
 def process_ans(message):
     client_logger.debug(f'Получен ответ от сервера: {message}')
     if RESPONSE in message:

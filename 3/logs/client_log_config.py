@@ -3,7 +3,7 @@ import sys
 import logging
 import logging.handlers
 
-client_formatter = logging.Formatter('%(asctime)-26s %(levelname)-10s %(filename)s %(message)s')
+client_formatter = logging.Formatter('%(asctime)-26s %(levelname)-10s %(filename)-16s %(funcName)-12s %(message)s')
 '''
 где:
 %(asctime)s - Время, когда была выполнена запись в журнал, в формате ASCII
