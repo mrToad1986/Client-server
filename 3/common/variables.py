@@ -3,7 +3,7 @@
 #сетевые подключения
 DEFAULT_PORT = 7777
 DEFAULT_IP_ADDR = '127.0.0.1'
-MAX_CONNECTIONS = 3 # число пользователей в очереди
+MAX_CONNECTIONS = 10 # число пользователей в очереди
 MAX_MSG_LENGTH = 2048
 ENCODING = 'utf-8'
 
