@@ -8,19 +8,20 @@
 # addr — ip-адрес сервера, по умолчанию 127.0.0.1;
 # port — tcp-порт на сервере, по умолчанию 7777.
 
+import sys
 import json
 import socket
 import time
-import sys
-import logging
 import argparse
-from logs import client_log_config
+import logging
+import logs.config_client_log
+from common.variables import DEFAULT_PORT, DEFAULT_IP_ADDRESS, \
+    ACTION, TIME, USER, ACCOUNT_NAME, SENDER, PRESENCE, RESPONSE, ERROR, MESSAGE, MESSAGE_TEXT
 from common.utils import get_message, send_message
-from common.variables import DEFAULT_PORT, DEFAULT_IP_ADDR, ACTION, TIME, USER, ACCOUNT_NAME, PRESENCE, RESPONSE, ERROR
 from errors import ReqFieldMissingError, ServerError
 from decorators import log
 
-# Создание именованного логгера для сервера
+# Инициализация клиентского логера
 LOGGER = logging.getLogger('client')
 
 
@@ -95,7 +96,7 @@ def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('addr', default=DEFAULT_IP_ADDRESS, nargs='?')
     parser.add_argument('port', default=DEFAULT_PORT, type=int, nargs='?')
-    parser.add_argument('-m', '--mode', default='listen', nargs='?')
+    parser.add_argument('-m', '--mode', default='send', nargs='?')
     namespace = parser.parse_args(sys.argv[1:])
     server_address = namespace.addr
     server_port = namespace.port
@@ -171,6 +172,7 @@ def main():
                 except (ConnectionResetError, ConnectionError, ConnectionAbortedError):
                     LOGGER.error(f'Соединение с сервером {server_address} было потеряно.')
                     sys.exit(1)
+
 
 if __name__ == '__main__':
     main()
