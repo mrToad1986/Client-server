@@ -16,7 +16,8 @@ import time
 from sys import argv, exit
 from logs import server_log_config
 from common.utils import get_message, send_message
-from common.variables import DEFAULT_PORT, MAX_CONNECTIONS, ACTION, TIME, USER, ACCOUNT_NAME, PRESENCE, RESPONSE, ERROR
+from common.variables import DEFAULT_PORT, MAX_CONNECTIONS, ACTION, TIME, USER, ACCOUNT_NAME, PRESENCE, RESPONSE,\
+    ERROR, SENDER, MESSAGE_TEXT, MESSAGE, DESTINATION, RESPONSE_200, RESPONSE_400, EXIT
 from decorators import log
 
 # Создание именованного логгера для сервера
@@ -26,19 +27,38 @@ server_logger = logging.getLogger('server_log')
 # проверка сообщений от клиента
 
 @log
-def process_client_message(message, message_list, client):
+def process_client_message(message, message_list, client, clients, names):
     server_logger.debug(f'Получен ответ от клиента: {message}')
-    if ACTION in message and message[ACTION] == PRESENCE and TIME in message and USER in message \
-            and message[USER][ACCOUNT_NAME] == 'Guest':
-        send_message(client, {RESPONSE: 200})
+    if ACTION in message and message[ACTION] == PRESENCE and TIME in message and USER in message:
+        if message[USER][ACCOUNT_NAME] not in names.keys():
+            names[message[USER][ACCOUNT_NAME]] = client
+            send_message(client, RESPONSE_200)
+        else:
+            response = RESPONSE_400
+            response[ERROR] = 'Имя пользователя уже занято.'
+            send_message(client, response)
+            clients.remove(client)
+            client.close()
         return
+        # Если это сообщение, то добавляем его в очередь сообщений.
+        # Ответ не требуется.
     elif ACTION in message and message[ACTION] == MESSAGE and \
-            TIME in message and MESSAGE_TEXT in message:
-        messages_list.append((message[ACCOUNT_NAME], message[MESSAGE_TEXT]))
+             DESTINATION in message and TIME in message \
+             and SENDER in message and MESSAGE_TEXT in message:
+        messages_list.append(message)
         return
+    # Если клиент выходит
+    elif ACTION in message and message[ACTION] == EXIT and ACCOUNT_NAME in message:
+        clients.remove(names[message[ACCOUNT_NAME]])
+        names[message[ACCOUNT_NAME]].close()
+        del names[message[ACCOUNT_NAME]]
+        return
+    # Иначе отдаём Bad request
     else:
-        send_message(client, {RESPONSE: 400, ERROR: 'Bad Request'})
-    return
+        response = RESPONSE_400
+        response[ERROR] = 'Запрос некорректен.'
+        send_message(client, response)
+        return
 
 
 def main():
